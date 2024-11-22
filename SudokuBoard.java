@@ -41,6 +41,10 @@ public class SudokuBoard {
         return board[row][col];
     }
 
+    public void setValue(int row, int col, int value) {
+        board[row][col] = value;
+    }
+
     // board display
     @Override
     public String toString() {

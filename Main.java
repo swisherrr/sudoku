@@ -16,6 +16,16 @@ public class Main {
             System.out.println("Initial board:");
             System.out.println(board);
 
+            SudokuSolver solver = new SudokuSolver();
+            SudokuBoard solution = solver.solveBFS(board);
+
+            if (solution != null) {
+                System.out.println("\nSolution:");
+                System.out.println(solution);
+            } else {
+                System.out.println("\nNo solution exists!");
+            }
+
         } catch (FileNotFoundException e) {
             System.out.println("error reading file: " + e.getMessage());
         }
