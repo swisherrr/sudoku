@@ -23,17 +23,28 @@ public class Main {
             long endTime = System.currentTimeMillis();
 
             if (solution != null) {
-                System.out.println("\nSolution found!");
+                System.out.println("\nBFS Solution");
                 System.out.println(solution.getBoard());
-                System.out.println("\nStatistics:");
-                System.out.println("Total nodes created: " + graph.getTotalNodes());
                 System.out.println("Time taken: " + (endTime - startTime) + "ms");
 
-                // print solution path length
-                List<SudokuNode> path = graph.getSolutionPath(solution);
-                System.out.println("Solution path length: " + path.size());
             } else {
-                System.out.println("\nNo solution exists!");
+                System.out.println("\nNo solution exists");
+            }
+
+            SudokuGraph graphDLS = new SudokuGraph(initialBoard);
+            startTime = System.currentTimeMillis();
+
+            SudokuNode solutionDLS = graphDLS.solveDLS();
+
+            endTime = System.currentTimeMillis();
+
+            if (solutionDLS != null) {
+                System.out.println("\nDLS Solution:");
+                System.out.println(solutionDLS.getBoard());
+                System.out.println("Time taken: " + (endTime - startTime) + "ms");
+
+            } else {
+                System.out.println("\nNo solution exists");
             }
 
         } catch (FileNotFoundException e) {

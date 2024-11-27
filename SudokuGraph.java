@@ -65,6 +65,68 @@ public class SudokuGraph {
         return null;  // no solution found
     }
 
+    public SudokuNode solveDLS() {
+        // Start DLS from root with limit of 81 (total cells)
+        return DLS(root, 81);
+    }
+
+    private SudokuNode DLS(SudokuNode node, int limit) {
+        // If we've filled all boxes, we've found a solution
+        if (node.getCurrentBox() >= 81) {
+            return node;
+        }
+
+        // If we've hit the depth limit
+        if (node.getLevel() >= limit) {
+            return null;
+        }
+
+        // Get current position
+        int row = node.getCurrentBox() / 9;
+        int col = node.getCurrentBox() % 9;
+
+        // If it's a fixed/question box, only one path possible
+        if (node.getBoard().isFixed(row, col)) {
+            SudokuNode child = new SudokuNode(
+                    node.getBoard(),
+                    node.getCurrentBox() + 1,
+                    node.getLevel() + 1
+            );
+            node.addChild(child);
+            totalNodes++;
+
+            // Immediately explore this path
+            return DLS(child, limit);
+        }
+
+        // Try each possible number in current position
+        for (int num = 1; num <= 9; num++) {
+            if (isValidMove(node.getBoard(), row, col, num)) {
+                // Create new board with this number
+                SudokuBoard newBoard = new SudokuBoard(node.getBoard());
+                newBoard.setValue(row, col, num);
+
+                // Create child node
+                SudokuNode child = new SudokuNode(
+                        newBoard,
+                        node.getCurrentBox() + 1,
+                        node.getLevel() + 1
+                );
+                node.addChild(child);
+                totalNodes++;
+
+                // Immediately explore this path
+                SudokuNode result = DLS(child, limit);
+                if (result != null) {
+                    return result;  // Solution found
+                }
+                // If no solution found, loop continues to try next number
+            }
+        }
+
+        return null;  // No solution found in this path
+    }
+
     // method to get the solution path once solution is found
     public List<SudokuNode> getSolutionPath(SudokuNode solutionNode) {
         List<SudokuNode> path = new ArrayList<>();
