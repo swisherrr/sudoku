@@ -1,17 +1,28 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class SudokuNode {
     private SudokuBoard board;
-    private int currentBox;  // tracks which box we're working on (0-80)
+    private int currentBox;  // which box we're working on (0-80)
+    private int level;       // level in the graph
+    private SudokuNode parent;
+    private List<SudokuNode> children;
 
-    public SudokuNode(SudokuBoard board, int currentBox) {
+    public SudokuNode(SudokuBoard board, int currentBox, int level) {
         this.board = new SudokuBoard(board);
         this.currentBox = currentBox;
+        this.level = level;
+        this.children = new ArrayList<>();
     }
 
-    public SudokuBoard getBoard() {
-        return board;
+    public void addChild(SudokuNode child) {
+        children.add(child);
+        child.parent = this;
     }
 
-    public int getCurrentBox() {
-        return currentBox;
-    }
+    public SudokuBoard getBoard() { return board; }
+    public int getCurrentBox() { return currentBox; }
+    public int getLevel() { return level; }
+    public List<SudokuNode> getChildren() { return children; }
+    public SudokuNode getParent() { return parent; }
 }

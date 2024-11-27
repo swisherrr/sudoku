@@ -1,35 +1,46 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
+import java.util.List;
 public class Main {
     public static void main(String[] args) {
         String filename = "./boards/easy.txt";
         try {
+            // read and initialize puzzle
             int[][] initialPuzzle = readPuzzleFromFile(filename);
+            SudokuBoard initialBoard = new SudokuBoard();
+            initialBoard.initializeBoard(initialPuzzle);
 
-            // initialize the board
-            SudokuBoard board = new SudokuBoard();
-            board.initializeBoard(initialPuzzle);
+            System.out.println("Initial Puzzle:");
+            System.out.println(initialBoard);
 
-            // display initial board
-            System.out.println("Initial board:");
-            System.out.println(board);
+            // create graph and solve
+            SudokuGraph graph = new SudokuGraph(initialBoard);
+            long startTime = System.currentTimeMillis();
 
-            SudokuSolver solver = new SudokuSolver();
-            SudokuBoard solution = solver.solveBFS(board);
+            SudokuNode solution = graph.buildGraphBFS();
+
+            long endTime = System.currentTimeMillis();
 
             if (solution != null) {
-                System.out.println("\nSolution:");
-                System.out.println(solution);
+                System.out.println("\nSolution found!");
+                System.out.println(solution.getBoard());
+                System.out.println("\nStatistics:");
+                System.out.println("Total nodes created: " + graph.getTotalNodes());
+                System.out.println("Time taken: " + (endTime - startTime) + "ms");
+
+                // print solution path length
+                List<SudokuNode> path = graph.getSolutionPath(solution);
+                System.out.println("Solution path length: " + path.size());
             } else {
                 System.out.println("\nNo solution exists!");
             }
 
         } catch (FileNotFoundException e) {
-            System.out.println("error reading file: " + e.getMessage());
+            System.out.println("Error reading puzzle file: " + e.getMessage());
         }
     }
+
 
     private static int[][] readPuzzleFromFile(String filename) throws FileNotFoundException {
         int[][] puzzle = new int[9][9];
