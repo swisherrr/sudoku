@@ -3,6 +3,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
 public class SudokuGraph {
+
     private SudokuNode root;
     private int totalNodes;
 
@@ -15,18 +16,20 @@ public class SudokuGraph {
     public SudokuNode buildGraphBFS() {
         Queue<SudokuNode> queue = new LinkedList<>(); // queue for traversal
         queue.add(root);
+        int size = root.getBoard().getSize(); //given size
+        int totalCells = size * size;
 
         while (!queue.isEmpty()) { // continue while theres still nodes left
             SudokuNode current = queue.poll();
 
             // if all boxes full, solution.
-            if (current.getCurrentBox() >= 81) {
+            if (current.getCurrentBox() >= totalCells) {
                 return current;
             }
 
             // fet row and column from current box number
-            int row = current.getCurrentBox() / 9;
-            int col = current.getCurrentBox() % 9;
+            int row = current.getCurrentBox() / size;
+            int col = current.getCurrentBox() % size;
 
             // if question box, only one path possible
             if (current.getBoard().isFixed(row, col)) {
@@ -43,7 +46,7 @@ public class SudokuGraph {
             }
 
             // for non question boxes, try each possible number
-            for (int num = 1; num <= 9; num++) {
+            for (int num = 1; num <= size; num++) {//iterate over possible numbers
                 if (isValidMove(current.getBoard(), row, col, num)) {
                     // create new board with this number
                     SudokuBoard newBoard = new SudokuBoard(current.getBoard());
@@ -67,12 +70,16 @@ public class SudokuGraph {
 
     public SudokuNode solveDLS() {
         // Start DLS from root with limit of 81 (total cells)
-        return DLS(root, 81);
+        int size = root.getBoard().getSize(); //given size
+        int totalCells = size * size;
+        return DLS(root, totalCells);
     }
 
     private SudokuNode DLS(SudokuNode node, int limit) {
+        int size = root.getBoard().getSize(); //given size
+        int totalCells = size * size;
         // If we've filled all boxes, we've found a solution
-        if (node.getCurrentBox() >= 81) {
+        if (node.getCurrentBox() >= totalCells) {
             return node;
         }
 
@@ -82,8 +89,8 @@ public class SudokuGraph {
         }
 
         // Get current position
-        int row = node.getCurrentBox() / 9;
-        int col = node.getCurrentBox() % 9;
+        int row = node.getCurrentBox() / size;
+        int col = node.getCurrentBox() % size;
 
         // If it's a fixed/question box, only one path possible
         if (node.getBoard().isFixed(row, col)) {
@@ -100,7 +107,7 @@ public class SudokuGraph {
         }
 
         // Try each possible number in current position
-        for (int num = 1; num <= 9; num++) {
+        for (int num = 1; num <= size; num++) {
             if (isValidMove(node.getBoard(), row, col, num)) {
                 // Create new board with this number
                 SudokuBoard newBoard = new SudokuBoard(node.getBoard());
@@ -143,22 +150,25 @@ public class SudokuGraph {
     // validates moves
     private boolean isValidMove(SudokuBoard board, int row, int col, int num) {
         // check row
-        for (int x = 0; x < 9; x++) {
+        int size = board.getSize();
+        int subBoxSize = board.getSubBoxSize();
+
+        for (int x = 0; x < size; x++) {
             if (board.getValue(row, x) == num) return false;
         }
 
         // check column
-        for (int y = 0; y < 9; y++) {
+        for (int y = 0; y < size; y++) {
             if (board.getValue(y, col) == num) return false;
         }
 
         // find top left corner of the 3x3 box
-        int boxRow = row - row % 3;
-        int boxCol = col - col % 3;
+        int boxRow = row - row % subBoxSize;
+        int boxCol = col - col % subBoxSize;
 
         // check 3x3 box for conflicts
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < subBoxSize; i++) {
+            for (int j = 0; j < subBoxSize; j++) {
                 if (board.getValue(boxRow + i, boxCol + j) == num) return false;
             }
         }
