@@ -4,8 +4,8 @@ import java.util.Scanner;
 import java.util.List;
 public class Main {
     public static void main(String[] args) {
-        String filename = "./boards/medium16.txt";
-        int size = 16;
+        String filename = "./boards/25.txt";
+        int size = 25;
         try {
             // read and initialize puzzle
             int[][] initialPuzzle = readPuzzleFromFile(filename,size);
