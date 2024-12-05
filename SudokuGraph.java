@@ -1,3 +1,11 @@
+/**
+ *  Graph Class
+ * - Implements graph structure and search algorithms (BFS and DLS) for solving Sudoku puzzles
+ *
+ * Zac Swisher, Sneha Patel, Jordano Liberato
+ * CSC 301
+ * 12/06/24
+ */
 import java.util.Queue;
 import java.util.LinkedList;
 import java.util.List;

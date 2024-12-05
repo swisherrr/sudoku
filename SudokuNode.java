@@ -1,3 +1,11 @@
+/**
+ *  Node Class
+ * - Represents a node in the search tree, containing board state and position
+ *
+ * Zac Swisher, Sneha Patel, Jordano Liberato
+ * CSC 301
+ * 12/06/24
+ */
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,3 +1,14 @@
+/**
+ * Main Class
+ * - Tests and times Sudoku solver implementations (BFS and DLS)
+ * Based on research paper: "Comparison Analysis of Breadth First Search and Depth Limited Search Algorithms in Sudoku Game"
+ * - by Tirsa Ninia Lina, Matheus Supriyanto Rumetna
+ *
+ * Zac Swisher, Sneha Patel, Jordano Liberato
+ * CSC 301
+ * 12/06/24
+ */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -49,12 +60,7 @@ public class Main {
         int[][] puzzle = new int[size][size];
         Scanner scanner = new Scanner(new File(filename));
 
-        /* for (int i = 0; i < size; i++) {
-            String[] line = scanner.nextLine().trim().split(" ");
-            for (int j = 0; j < size; j++) {
-                puzzle[i][j] = Integer.parseInt(line[j]);
-            }
-        } */
+
        int row = 0;
        while (scanner.hasNextLine() && row < size){
         String line = scanner.nextLine().trim();
