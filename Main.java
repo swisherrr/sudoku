@@ -8,50 +8,65 @@
  * CSC 301
  * 12/06/24
  */
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.List;
 public class Main {
     public static void main(String[] args) {
-        String filename = "./boards/4solutions.txt";
-        int size = 9;
-        try {
-            // read and initialize puzzle
-            int[][] initialPuzzle = readPuzzleFromFile(filename,size);
-            SudokuBoard initialBoard = new SudokuBoard(size);
-            initialBoard.initializeBoard(initialPuzzle);
+        String[] boards9x9 = {
+                "./boards/easy9x9.txt",
+                "./boards/medium9x9.txt",
+                "./boards/hard9x9.txt"
+        };
 
-            System.out.println("Initial Puzzle:");
-            System.out.println(initialBoard);
+        String[] boards16x16 = {
+                "./boards/easy16x16.txt",
+                "./boards/medium16x16.txt"
+        };
 
-            // BFS Solutions
-            SudokuGraph graph = new SudokuGraph(initialBoard);
-            long startTime = System.nanoTime();
-            List<SudokuNode> bfsSolutions = graph.buildGraphBFS();
-            long endTime = System.nanoTime();
+        for (String filename : boards9x9) { // change for 16x16
+            System.out.println("\nProcessing: " + filename);
+            try {
+                int size = 9;  // size for 9x9 boards (change for 16x16)
+                int[][] initialPuzzle = readPuzzleFromFile(filename, size);
+                SudokuBoard initialBoard = new SudokuBoard(size);
+                initialBoard.initializeBoard(initialPuzzle);
 
-            System.out.println("\nBFS Solutions Found: " + bfsSolutions.size());
-            for (int i = 0; i < bfsSolutions.size(); i++) {
-                System.out.println("\nSolution " + (i + 1) + ":");
-                System.out.println(bfsSolutions.get(i).getBoard());
+                System.out.println("Initial Puzzle:");
+                System.out.println(initialBoard);
+
+                // BFS Solutions
+                SudokuGraph graph = new SudokuGraph(initialBoard);
+                long startTime = System.nanoTime();
+                List<SudokuNode> bfsSolutions = graph.buildGraphBFS();
+                long endTime = System.nanoTime();
+
+                System.out.println("\nBFS Solutions Found: " + bfsSolutions.size());
+                for (int i = 0; i < bfsSolutions.size(); i++) {
+                    System.out.println("\nSolution " + (i + 1) + ":");
+                    System.out.println(bfsSolutions.get(i).getBoard());
+                }
+                System.out.println("BFS Time taken: " + (endTime - startTime) + " ns");
+
+                // DLS Solution
+                SudokuGraph graphDLS = new SudokuGraph(initialBoard);
+                startTime = System.nanoTime();
+                SudokuNode solution = graphDLS.solveDLS();
+                endTime = System.nanoTime();
+
+                if (solution != null) {
+                    System.out.println("\nDLS Solution:");
+                    System.out.println(solution.getBoard());
+                } else {
+                    System.out.println("\nNo DLS solution found");
+                }
+                System.out.println("DLS Time taken: " + (endTime - startTime) + " ns");
+
+            } catch (FileNotFoundException e) {
+                System.out.println("Error reading " + filename + ": " + e.getMessage());
             }
-            System.out.println("BFS Time taken: " + (endTime - startTime) + " ns");
-
-            // DLS Solutions
-            SudokuGraph graphDLS = new SudokuGraph(initialBoard);
-            startTime = System.nanoTime();
-            SudokuNode solution = graphDLS.solveDLS();
-            endTime = System.nanoTime();
-
-            System.out.println("\nDLS Solutions Found: 1");
-            System.out.println(solution.getBoard());
-            System.out.println("DLS Time taken: " + (endTime - startTime) + " ns");
-
-
-        } catch (FileNotFoundException e) {
-            System.out.println("Error reading puzzle file: " + e.getMessage());
+            System.out.println("\n" + "=".repeat(50) + "\n");
         }
     }
 
