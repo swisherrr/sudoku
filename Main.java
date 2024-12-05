@@ -31,14 +31,11 @@ public class Main {
             // DLS Solutions
             SudokuGraph graphDLS = new SudokuGraph(initialBoard);
             startTime = System.nanoTime();
-            List<SudokuNode> dlsSolutions = graphDLS.solveDLS();
+            SudokuNode solution = graphDLS.solveDLS();
             endTime = System.nanoTime();
 
-            System.out.println("\nDLS Solutions Found: " + dlsSolutions.size());
-            for (int i = 0; i < dlsSolutions.size(); i++) {
-                System.out.println("\nSolution " + (i + 1) + ":");
-                System.out.println(dlsSolutions.get(i).getBoard());
-            }
+            System.out.println("\nDLS Solutions Found: 1");
+            System.out.println(solution.getBoard());
             System.out.println("DLS Time taken: " + (endTime - startTime) + " ns");
 
 

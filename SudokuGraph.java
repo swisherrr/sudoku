@@ -2,6 +2,7 @@ import java.util.Queue;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class SudokuGraph {
     private SudokuNode root;
@@ -70,76 +71,65 @@ public class SudokuGraph {
         return solutions;
     }
 
-    public List<SudokuNode> solveDLS() {
+    // DLS solution
+    public SudokuNode solveDLS() {
         int size = root.getBoard().getSize();
         int totalCells = size * size;
-        DLS(root, totalCells);
-        return solutions;
-    }
+        Stack<DLSState> stack = new Stack<>(); // for backtracking
+        SudokuBoard currentBoard = new SudokuBoard(root.getBoard());
 
-    // recursive DLS
-    private void DLS(SudokuNode node, int limit) {
-        // calculate total cells
-        int size = root.getBoard().getSize();
-        int totalCells = size * size;
+        stack.push(new DLSState(0, 1)); // start at first cell
 
-        // solution found
-        if (node.getCurrentBox() >= totalCells) {
-            solutions.add(node);
-            return;
-        }
+        while (!stack.isEmpty()) {
+            DLSState state = stack.peek(); // get current state
 
-        // check depth limit
-        if (node.getLevel() >= limit) {
-            return;
-        }
+            if (state.currentBox >= totalCells) { // if board is full
+                return new SudokuNode(new SudokuBoard(currentBoard), totalCells, totalCells);
+            }
 
-        // calculate current position
-        int row = node.getCurrentBox() / size;
-        int col = node.getCurrentBox() % size;
+            // calculate position
+            int row = state.currentBox / size;
+            int col = state.currentBox % size;
 
-        // for fixed/question boxes
-        if (node.getBoard().isFixed(row, col)) {
-            SudokuNode child = new SudokuNode(
-                    node.getBoard(),
-                    node.getCurrentBox() + 1,
-                    node.getLevel() + 1
-            );
-            node.addChild(child);
-            totalNodes++;
-            DLS(child, limit); // continue search with child
-            return;
-        }
+            // if question/fixed box
+            if (currentBoard.isFixed(row, col)) {
+                stack.pop(); // remove current state
+                stack.push(new DLSState(state.currentBox + 1, 1)); // move to next cell
+                continue;
+            }
 
-        // try all possible numbers for that cell
-        for (int num = 1; num <= size; num++) {
-            if (isValidMove(node.getBoard(), row, col, num)) {
-                SudokuBoard newBoard = new SudokuBoard(node.getBoard());
-                newBoard.setValue(row, col, num);
+            // if tried all numbers,
+            if (state.currentNum > size) {
+                stack.pop(); // backtrack until no states left
+                if (!stack.isEmpty()) {
+                    DLSState prevState = stack.peek(); // get previous state
+                    undoMove(currentBoard, prevState.currentBox); // undo last move
+                    prevState.currentNum++; // try next number
+                }
+                continue;
+            }
 
-                SudokuNode child = new SudokuNode(
-                        newBoard,
-                        node.getCurrentBox() + 1,
-                        node.getLevel() + 1
-                );
-                node.addChild(child);
-                totalNodes++;
-                DLS(child, limit); // recursively try this path
+            // if move is valid, place the number and move to next cell
+            if (isValidMove(currentBoard, row, col, state.currentNum)) {
+                currentBoard.setValue(row, col, state.currentNum);
+                stack.push(new DLSState(state.currentBox + 1, 1));
+            } else {
+                state.currentNum++; // try next number
             }
         }
+
+        return null; // no solution
     }
 
-    public List<SudokuNode> getSolutionPath(SudokuNode solutionNode) {
-        List<SudokuNode> path = new ArrayList<>();
-        SudokuNode current = solutionNode;
-
-        while (current != null) {
-            path.add(0, current);
-            current = current.getParent();
-        }
-
-        return path;
+    // undos moves for backtracking
+    private void undoMove(SudokuBoard board, int box) {
+        // get position
+        int row = box / board.getSize();
+        int col = box % board.getSize();
+        // clear cell
+        board.setValue(row, col, 0);
     }
+
 
     private boolean isValidMove(SudokuBoard board, int row, int col, int num) {
         int size = board.getSize();
@@ -167,17 +157,5 @@ public class SudokuGraph {
         }
 
         return true;
-    }
-
-    public void clearSolutions() {
-        solutions.clear();
-    }
-
-    public int getTotalNodes() {
-        return totalNodes;
-    }
-
-    public SudokuNode getRoot() {
-        return root;
     }
 }
