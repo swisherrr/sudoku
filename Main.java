@@ -4,7 +4,7 @@ import java.util.Scanner;
 import java.util.List;
 public class Main {
     public static void main(String[] args) {
-        String filename = "./boards/easy.txt";
+        String filename = "./boards/4solutions.txt";
         int size = 9;
         try {
             // read and initialize puzzle
