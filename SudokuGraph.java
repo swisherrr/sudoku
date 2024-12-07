@@ -24,6 +24,8 @@ public class SudokuGraph {
 
     // BFS traverse method to build the graph and find all solutions
     public List<SudokuNode> buildGraphBFS() {
+        //improvement: added queue, so the method does not have to rely on recursion. This ensures better processing 
+        //and prevents issues like deep recursion.
         Queue<SudokuNode> queue = new LinkedList<>(); // queue for traversal
         queue.add(root); // start at root
         // calculate total cells
@@ -37,6 +39,8 @@ public class SudokuGraph {
             // if all boxes full, add to solutions
             if (current.getCurrentBox() >= totalCells) {
                 solutions.add(current);
+                //improvement: instead of stopping when a valid solution is found, now the valid solution is added to the solutions list and the method continues 
+                //processing the remaining nodes
                 continue;  // continue searching for more solutions
             }
 
@@ -76,13 +80,16 @@ public class SudokuGraph {
             }
         }
 
-        return solutions;
+        return solutions;//improved to return list of valid solutions instead of one
     }
 
     // DLS solution
     public SudokuNode solveDLS() {
         int size = root.getBoard().getSize();
         int totalCells = size * size;
+        //improvement: replaced recursion with Stack<DLSState>. It holds both the current position and the number being tried allowing better 
+        //control over backtracking. The stack holds the state, and if no valid move is possible, it pops the current state and attempts the
+        //next possibility, undoing the last move as necessary.
         Stack<DLSState> stack = new Stack<>(); // for backtracking
         SudokuBoard currentBoard = new SudokuBoard(root.getBoard());
 
@@ -128,7 +135,7 @@ public class SudokuGraph {
 
         return null; // no solution
     }
-
+    //improved it to work for any grid size given instead of fixed size 9
     // undos moves for backtracking
     private void undoMove(SudokuBoard board, int box) {
         // get position

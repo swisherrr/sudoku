@@ -25,10 +25,10 @@ public class Main {
                 "./boards/medium16x16.txt"
         };
 
-        for (String filename : boards9x9) { // change for 16x16
+        for (String filename : boards16x16) { // change for 16x16
             System.out.println("\nProcessing: " + filename);
             try {
-                int size = 9;  // size for 9x9 boards (change for 16x16)
+                int size = 16;  // size for 9x9 boards (change for 16x16)
                 int[][] initialPuzzle = readPuzzleFromFile(filename, size);
                 SudokuBoard initialBoard = new SudokuBoard(size);
                 initialBoard.initializeBoard(initialPuzzle);

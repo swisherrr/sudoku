@@ -16,6 +16,7 @@ public class SudokuBoard {
     //constructor to initialize the sudoku board with a given size
     public SudokuBoard(int SIZE) {
         this.SIZE = SIZE;
+        //improved the subBoxSize calculation by setting it to the square root of SIZE, ensuring the sub-boxes conform to Sudoku rules
         this.subBoxSize = (int) Math.sqrt(SIZE); // sub-box size is the square root of the board size
         this.board = new int[SIZE][SIZE];        //initialize the board as a 2D array of integers
         this.isFixed = new boolean[SIZE][SIZE];  //initialize the fixed cells
@@ -28,10 +29,11 @@ public class SudokuBoard {
         this.board = new int[SIZE][SIZE];
         this.isFixed = new boolean[SIZE][SIZE];
         //copy values from the other board to this new board
+        //improved it to work for any grid size given instead of fixed size 9
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
-                this.board[i][j] = other.board[i][j];
-                this.isFixed[i][j] = other.isFixed[i][j];
+                this.board[i][j] = other.board[i][j];//copies cell values
+                this.isFixed[i][j] = other.isFixed[i][j];//copies fixed cells
             }
         }
     }
@@ -41,7 +43,7 @@ public class SudokuBoard {
         for (int i = 0; i < SIZE; i++) {
             for (int j = 0; j < SIZE; j++) {
                 board[i][j] = initial[i][j];
-                //mark the cell as fixed if it's not empty (0)
+                //mark the cell as fixed if it's not empty
                 if (initial[i][j] != EMPTY) {
                     isFixed[i][j] = true;// this cell has a given value
                 }
